@@ -1,0 +1,74 @@
+import { useState, useEffect } from 'react';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import Preloader from '@/components/layout/Preloader';
+import CustomCursor from '@/components/layout/CustomCursor';
+import SmoothScroll from '@/components/layout/SmoothScroll';
+import HomePage from '@/pages/HomePage';
+import AboutPage from '@/pages/AboutPage';
+import PortfolioPage from '@/pages/PortfolioPage';
+import ServicesPage from '@/pages/ServicesPage';
+import PackagesPage from '@/pages/PackagesPage';
+import ContactPage from '@/pages/ContactPage';
+import FAQPage from '@/pages/FAQPage';
+import GalleryPage from '@/pages/GalleryPage';
+import BlogPage from '@/pages/BlogPage';
+import ShopPage from '@/pages/ShopPage';
+import BookPage from '@/pages/BookPage';
+
+// Scroll to top on route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
+function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  const location = useLocation();
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 2800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="noise-overlay bg-white min-h-screen">
+      <CustomCursor />
+      <ScrollToTop />
+      <AnimatePresence mode="wait">
+        {isLoading ? (
+          <Preloader key="preloader" onComplete={() => setIsLoading(false)} />
+        ) : (
+          <SmoothScroll>
+            <Navbar />
+            <main>
+              <AnimatePresence mode="wait">
+                <Routes location={location} key={location.pathname}>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/portfolio" element={<Navigate to="/gallery" replace />} />
+                  <Route path="/services" element={<ServicesPage />} />
+                  <Route path="/packages" element={<PackagesPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/faq" element={<FAQPage />} />
+                  <Route path="/gallery" element={<GalleryPage />} />
+                  <Route path="/blog" element={<Navigate to="/" replace />} />
+                  <Route path="/shop" element={<ShopPage />} />
+                  <Route path="/book" element={<BookPage />} />
+                </Routes>
+              </AnimatePresence>
+            </main>
+            <Footer />
+          </SmoothScroll>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+export default App;
