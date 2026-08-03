@@ -178,7 +178,7 @@ const FAQPage = () => {
                 <Link to="/contact">
                   <Button variant="primary" size="lg">Contact Us</Button>
                 </Link>
-                <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer">
+                <a href="https://wa.me/919949216881" target="_blank" rel="noopener noreferrer">
                   <Button variant="glass" size="lg">Chat on WhatsApp</Button>
                 </a>
               </div>

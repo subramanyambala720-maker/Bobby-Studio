@@ -1,0 +1,43 @@
+.list {
+  position: relative;
+  width: 100%;
+  transition: height 0.3s ease;
+}
+
+.item-wrapper {
+  position: absolute;
+  will-change: transform, width, height, opacity;
+  padding: 8px;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+}
+
+.item-wrapper > .item-img {
+  position: relative;
+  background-size: cover;
+  background-position: center center;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  box-shadow: 0px 10px 40px -10px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.item-wrapper > .item-img .item-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.25rem;
+  color: white;
+}
+
+.item-wrapper:hover .item-overlay {
+  opacity: 1;
+}

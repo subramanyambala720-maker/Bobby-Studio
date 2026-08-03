@@ -20,11 +20,11 @@ const SectionHeading = ({
   className = '',
 }: SectionHeadingProps) => {
   return (
-    <div className={`${align === 'center' ? 'text-center' : 'text-left'} mb-16 md:mb-20 ${className}`}>
+    <div className={`${align === 'center' ? 'text-center' : 'text-left'} mb-12 md:mb-16 ${className}`}>
       {/* Label */}
       {label && (
         <FadeIn delay={0}>
-          <p className="text-sm text-primary tracking-[0.25em] uppercase font-display mb-4">
+          <p className="text-xs md:text-sm text-[#000000] tracking-[0.3em] uppercase font-display font-bold mb-3">
             {label}
           </p>
         </FadeIn>
@@ -32,29 +32,29 @@ const SectionHeading = ({
 
       {/* Title */}
       <FadeIn delay={0.1}>
-        <h2 className="text-display font-luxury text-text text-balance">
+        <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-luxury text-[#000000] text-balance leading-[1.12] font-semibold">
           {title}
           {titleAccent && (
             <>
               {' '}
-              <span className="text-gradient-gold italic">{titleAccent}</span>
+              <span className="italic font-normal">{titleAccent}</span>
             </>
           )}
         </h2>
       </FadeIn>
 
-      {/* Gold accent line */}
+      {/* Accent line */}
       <FadeIn delay={0.2}>
         <div className={`flex ${align === 'center' ? 'justify-center' : 'justify-start'} mt-6`}>
-          <div className="w-12 h-[2px] bg-primary rounded-full" />
-          <div className="w-4 h-[2px] bg-primary/40 rounded-full ml-2" />
+          <div className="w-16 h-[2.5px] bg-[#000000] rounded-full" />
+          <div className="w-4 h-[2.5px] bg-[#000000]/40 rounded-full ml-2" />
         </div>
       </FadeIn>
 
       {/* Description */}
       {description && (
         <FadeIn delay={0.3}>
-          <p className={`text-muted text-clamp-base leading-relaxed mt-6 ${align === 'center' ? 'max-w-2xl mx-auto' : 'max-w-xl'}`}>
+          <p className={`text-[#444444] text-base md:text-xl leading-relaxed mt-6 font-light ${align === 'center' ? 'max-w-3xl mx-auto' : 'max-w-xl'}`}>
             {description}
           </p>
         </FadeIn>

@@ -4,19 +4,27 @@ import { FiPhone, FiMail, FiMapPin, FiClock, FiSend, FiInstagram, FiYoutube, FiM
 import { FaWhatsapp, FaFacebookF } from 'react-icons/fa';
 import FadeIn from '@/components/animations/FadeIn';
 import Button from '@/components/ui/Button';
+import GlassIcons from '@/components/ui/GlassIcons';
 
 const contactInfo = [
-  { icon: FiPhone, label: 'Phone', value: '+91 98765 43210', href: 'tel:+919876543210', sub: 'Mon-Sat, 9am-8pm' },
-  { icon: FiMail, label: 'Email', value: 'hello@bobbystudio.com', href: 'mailto:hello@bobbystudio.com', sub: 'We reply within 24 hours' },
+  { icon: FiPhone, label: 'Phone', value: '+91 99492 16881', href: 'tel:+919949216881', sub: 'Mon-Sat, 9am-8pm' },
+  { icon: FiMail, label: 'Email', value: 'subramanyambala720@gmail.com', href: 'mailto:subramanyambala720@gmail.com', sub: 'We reply within 24 hours' },
   { icon: FiMapPin, label: 'Studio', value: '42 Premium Avenue, Photography District', href: '#map', sub: 'Creative City — 400001' },
   { icon: FiClock, label: 'Working Hours', value: 'Mon - Sat: 9:00 AM - 8:00 PM', href: undefined, sub: 'Sunday by appointment only' },
 ];
 
 const socialLinks = [
-  { icon: FiInstagram, label: 'Instagram', href: 'https://instagram.com/bobbystudio', handle: '@bobbystudio' },
-  { icon: FaWhatsapp, label: 'WhatsApp', href: 'https://wa.me/919876543210', handle: '+91 98765 43210' },
+  { icon: FiInstagram, label: 'Instagram', href: 'https://instagram.com/bobbyyyy.x_', handle: '@bobbyyyy.x_' },
+  { icon: FaWhatsapp, label: 'WhatsApp', href: 'https://wa.me/919949216881', handle: '+91 99492 16881' },
   { icon: FiYoutube, label: 'YouTube', href: 'https://youtube.com/bobbystudio', handle: 'Bobby Studio' },
   { icon: FaFacebookF, label: 'Facebook', href: 'https://facebook.com/bobbystudio', handle: 'Bobby Studio' },
+];
+
+const glassSocialItems = [
+  { icon: <FiInstagram size={20} />, label: 'Instagram', href: 'https://instagram.com/bobbyyyy.x_' },
+  { icon: <FaWhatsapp size={20} />, label: 'WhatsApp', href: 'https://wa.me/919949216881' },
+  { icon: <FiYoutube size={20} />, label: 'YouTube', href: 'https://youtube.com/bobbystudio' },
+  { icon: <FaFacebookF size={20} />, label: 'Facebook', href: 'https://facebook.com/bobbystudio' },
 ];
 
 const serviceOptions = [
@@ -216,7 +224,7 @@ const ContactPage = () => {
               {/* WhatsApp CTA */}
               <FadeIn delay={0.3}>
                 <a
-                  href="https://wa.me/919876543210?text=Hi%20Bobby%20Studio!%20I'm%20interested%20in%20your%20photography%20services."
+                  href="https://wa.me/919949216881?text=Hi%20Bobby%20Studio!%20I'm%20interested%20in%20your%20photography%20services."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group flex items-center gap-4 p-5 glass rounded-2xl hover:border-green-500/30 transition-all duration-300"
@@ -231,29 +239,11 @@ const ContactPage = () => {
                 </a>
               </FadeIn>
 
-              {/* Social Links */}
+              {/* Social Links with React Bits GlassIcons */}
               <FadeIn delay={0.4}>
                 <div className="glass rounded-2xl p-6">
-                  <h3 className="text-sm font-display text-text uppercase tracking-wider mb-4">Follow Us</h3>
-                  <div className="space-y-3">
-                    {socialLinks.map((s) => (
-                      <a
-                        key={s.label}
-                        href={s.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-3 text-muted hover:text-primary transition-colors group"
-                      >
-                        <div className="w-9 h-9 rounded-full border border-glass-border flex items-center justify-center group-hover:border-primary/40 transition-colors">
-                          <s.icon size={14} />
-                        </div>
-                        <div>
-                          <p className="text-sm">{s.label}</p>
-                          <p className="text-xs text-muted/60">{s.handle}</p>
-                        </div>
-                      </a>
-                    ))}
-                  </div>
+                  <h3 className="text-sm font-display text-text uppercase tracking-wider mb-2">Follow Us</h3>
+                  <GlassIcons items={glassSocialItems} />
                 </div>
               </FadeIn>
             </div>

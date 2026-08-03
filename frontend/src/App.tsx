@@ -4,7 +4,6 @@ import { AnimatePresence } from 'framer-motion';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import Preloader from '@/components/layout/Preloader';
-import CustomCursor from '@/components/layout/CustomCursor';
 import SmoothScroll from '@/components/layout/SmoothScroll';
 import HomePage from '@/pages/HomePage';
 import AboutPage from '@/pages/AboutPage';
@@ -18,12 +17,23 @@ import BlogPage from '@/pages/BlogPage';
 import ShopPage from '@/pages/ShopPage';
 import BookPage from '@/pages/BookPage';
 
-// Scroll to top on route change
+// Scroll to top or target anchor on route change
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    if (hash) {
+      const timer = setTimeout(() => {
+        const id = hash.replace('#', '');
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 150);
+      return () => clearTimeout(timer);
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname, hash]);
   return null;
 }
 
@@ -32,13 +42,12 @@ function App() {
   const location = useLocation();
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 2800);
+    const timer = setTimeout(() => setIsLoading(false), 1400);
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <div className="noise-overlay bg-white min-h-screen">
-      <CustomCursor />
       <ScrollToTop />
       <AnimatePresence mode="wait">
         {isLoading ? (

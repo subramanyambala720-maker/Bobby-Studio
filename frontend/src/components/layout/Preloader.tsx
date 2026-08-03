@@ -62,20 +62,6 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
           Luxury Photography & Cinematography
         </motion.p>
 
-        {/* Progress Bar — Pure Black Loading Line */}
-        <motion.div
-          className="w-48 h-[2px] bg-[#EAEAEA] rounded-full overflow-hidden mt-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
-        >
-          <motion.div
-            className="h-full bg-black"
-            initial={{ width: '0%' }}
-            animate={{ width: '100%' }}
-            transition={{ duration: 1.8, ease: 'easeInOut', delay: 1.3 }}
-          />
-        </motion.div>
       </div>
     </motion.div>
   );

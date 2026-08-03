@@ -1,8 +1,11 @@
+import { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Link, useLocation } from 'react-router-dom';
 import { FiCamera, FiAward, FiHeart, FiUsers, FiStar, FiTarget, FiZap, FiGlobe } from 'react-icons/fi';
 import FadeIn from '@/components/animations/FadeIn';
 import SectionHeading from '@/components/ui/SectionHeading';
 import FloatingCard from '@/components/animations/FloatingCard';
+import VariableProximity from '@/components/ui/VariableProximity';
 
 const teamMembers = [
   {
@@ -92,6 +95,21 @@ const equipment = [
 ];
 
 const AboutPage = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (hash === '#team') {
+      const timer = setTimeout(() => {
+        const element = document.getElementById('team');
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 250);
+      return () => clearTimeout(timer);
+    }
+  }, [hash]);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -100,46 +118,60 @@ const AboutPage = () => {
       transition={{ duration: 0.5 }}
       className="bg-white text-[#000000]"
     >
-      {/* Clean Hero Header */}
-      <section className="relative pt-36 pb-20 md:pt-44 md:pb-28 overflow-hidden bg-white text-[#000000] border-b border-[#EAEAEA]">
-        <div className="container-premium relative z-10 text-center">
+      {/* Hero Header with Background Image & Variable Proximity */}
+      <section ref={containerRef} className="relative pt-36 pb-20 md:pt-44 md:pb-28 overflow-hidden bg-black text-white">
+        <img
+          src="/images/about_hero_banner.jpg"
+          alt="Bobby Studio Photography"
+          className="absolute inset-0 w-full h-full object-cover opacity-45 scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/30" />
+        <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 relative z-10 text-left">
           <FadeIn>
-            <span className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#FAFAFA] border border-[#EAEAEA] rounded-full text-xs tracking-[0.25em] text-[#000000] uppercase mb-6 shadow-sm font-semibold">
-              <FiCamera size={14} className="text-[#000000]" />
-              OUR STORY
-            </span>
+            <nav className="flex items-center gap-2 text-xs md:text-sm text-gray-300 font-light mb-6 justify-start text-left">
+              <Link to="/" className="hover:text-white transition-colors">Home</Link>
+              <span>»</span>
+              <span className="text-gray-200">About Us</span>
+            </nav>
           </FadeIn>
           <FadeIn delay={0.1}>
-            <h1 className="text-hero font-luxury text-[#000000] mb-6 font-semibold">
-              The Art of{' '}
-              <span className="italic font-bold text-[#000000]">Seeing</span>
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-luxury text-white mb-4 leading-tight max-w-4xl font-normal text-left">
+              <VariableProximity
+                label="Driven by creativity. Trusted by clients. Known for quality."
+                className="cursor-pointer text-left block"
+                fromFontVariationSettings="'wght' 400, 'opsz' 9"
+                toFontVariationSettings="'wght' 900, 'opsz' 40"
+                containerRef={containerRef}
+                radius={120}
+                falloff="linear"
+                style={{ textAlign: 'left', display: 'block' }}
+              />
             </h1>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <p className="text-[#555555] text-clamp-base max-w-2xl mx-auto leading-relaxed font-body font-light">
-              For over a decade, Bobby Studio has been transforming fleeting moments into
-              eternal masterpieces. We don't just take photographs — we craft visual
-              stories that resonate with emotion, beauty, and truth.
+            <p className="text-gray-300 text-xs md:text-sm max-w-xl font-light tracking-wide text-left">
+              Your Search for the Best Photography Studio in Bengaluru Ends Here
             </p>
           </FadeIn>
         </div>
       </section>
+
 
       {/* Our Story */}
       <section className="section-padding bg-white border-b border-[#EAEAEA]">
         <div className="container-premium">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <FadeIn direction="left">
-              <div className="relative aspect-[4/5] rounded-3xl overflow-hidden bg-[#FAFAFA] border border-[#EAEAEA] group shadow-xl">
+              <div className="relative aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3] rounded-3xl overflow-hidden bg-[#FAFAFA] border border-[#EAEAEA] group shadow-xl">
                 <img
-                  src="/images/about_studio_story.png"
+                  src="/images/our_story_bride_bg.png"
                   alt="Bobby Studio Heritage Photography"
                   className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6 p-4 bg-white/90 rounded-2xl border border-[#EAEAEA] backdrop-blur-xl">
-                  <p className="text-[#000000] text-xs font-display tracking-[0.2em] uppercase font-semibold">Pre-Wedding Romance</p>
-                  <p className="text-[#000000] font-luxury text-base font-semibold">Udaipur Destination Session</p>
+                  <p className="text-[#000000] text-xs font-display tracking-[0.2em] uppercase font-semibold">South Indian Wedding Rituals</p>
+                  <p className="text-[#000000] font-luxury text-base font-semibold">Traditional Bridal Fine Art Expressions</p>
                 </div>
               </div>
             </FadeIn>
@@ -252,7 +284,7 @@ const AboutPage = () => {
       </section>
 
       {/* Team Section */}
-      <section className="section-padding bg-[#FAFAFA] border-b border-[#EAEAEA]">
+      <section id="team" className="section-padding bg-[#FAFAFA] border-b border-[#EAEAEA] scroll-mt-24">
         <div className="container-premium">
           <SectionHeading
             label="The Masters Behind the Lens"
@@ -269,14 +301,7 @@ const AboutPage = () => {
                   </div>
                   <h3 className="text-xl font-luxury text-[#000000] mb-1 font-semibold group-hover:text-[#000000] transition-colors">{member.name}</h3>
                   <p className="text-xs text-[#555555] tracking-widest uppercase font-display mb-4 font-semibold">{member.role}</p>
-                  <p className="text-xs text-[#555555] leading-relaxed mb-6 font-light">{member.bio}</p>
-                  <div className="flex flex-wrap gap-2 pt-4 border-t border-[#EAEAEA]">
-                    {member.specialties.map((spec) => (
-                      <span key={spec} className="px-3 py-1 bg-[#FAFAFA] border border-[#EAEAEA] rounded-full text-[10px] text-[#000000] font-display font-medium">
-                        {spec}
-                      </span>
-                    ))}
-                  </div>
+                  <p className="text-xs text-[#555555] leading-relaxed font-light">{member.bio}</p>
                 </div>
               </FadeIn>
             ))}

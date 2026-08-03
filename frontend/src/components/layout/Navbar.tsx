@@ -2,16 +2,16 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiOutlineMenuAlt4, HiX } from 'react-icons/hi';
-import { FiSearch, FiPhone, FiMail, FiInstagram, FiArrowRight } from 'react-icons/fi';
+import { FiSearch, FiPhone, FiMail, FiInstagram, FiArrowRight, FiChevronDown } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 
 const navLinks = [
   { name: 'Home', path: '/' },
-  { name: 'About', path: '/about' },
-  { name: 'Services', path: '/services' },
+  { name: 'About Us', path: '/about' },
+  { name: 'Services', path: '/services', hasDropdown: true },
   { name: 'Gallery', path: '/gallery' },
   { name: 'Packages', path: '/packages' },
-  { name: 'Contact', path: '/contact' },
+  { name: 'Contact Us', path: '/contact' },
 ];
 
 const searchQuickLinks = [
@@ -55,49 +55,49 @@ const Navbar = () => {
       <motion.header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           isScrolled
-            ? 'py-4 bg-white/95 backdrop-blur-xl border-b border-[#EAEAEA] shadow-[0_4px_20px_rgba(0,0,0,0.04)]'
-            : 'py-6 bg-white/80 backdrop-blur-md border-b border-[#EAEAEA]'
+            ? 'py-3.5 bg-[#0A0A0A]/95 backdrop-blur-xl border-b border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.6)]'
+            : 'py-5 bg-gradient-to-b from-black/90 via-black/65 to-transparent'
         }`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
         <div className="w-full px-6 md:px-12 lg:px-16 flex items-center justify-between">
-          {/* Logo — Far Left with Large Margin to Home */}
-          <Link to="/" className="relative z-10 flex items-center gap-3.5 group flex-shrink-0 mr-12 lg:mr-24 xl:mr-32" aria-label="Bobby Studio Home">
-            <div className="w-11 h-11 border border-[#000000] bg-transparent rounded-full flex items-center justify-center transition-all duration-300 group-hover:bg-[#000000] group-hover:text-white">
-              <span className="text-xl font-luxury font-bold text-[#000000] group-hover:text-white transition-colors">B</span>
+          {/* Logo — Left */}
+          <Link to="/" className="relative z-10 flex items-center gap-3.5 group flex-shrink-0" aria-label="Bobby Studio Home">
+            <div className="w-10 h-10 border border-white/40 bg-white/5 rounded-full flex items-center justify-center transition-all duration-300 group-hover:bg-white group-hover:text-black">
+              <span className="text-lg font-luxury font-bold text-white group-hover:text-black transition-colors">B</span>
             </div>
             <div className="flex flex-col">
-              <span className="text-lg font-luxury tracking-[0.2em] font-bold text-[#000000] leading-none">
+              <span className="text-base font-luxury tracking-[0.2em] font-bold text-white leading-none">
                 BOBBY STUDIO
               </span>
-              <span className="text-[9px] tracking-[0.35em] uppercase text-[#555555] leading-none mt-1.5 font-medium">
+              <span className="text-[8px] tracking-[0.35em] uppercase text-white/60 leading-none mt-1 font-medium">
                 Luxury Photography
               </span>
             </div>
           </Link>
 
-          {/* Right Pushed Navigation & Actions Container */}
+          {/* Right-Aligned Navigation Links & Actions */}
           <div className="hidden lg:flex items-center gap-6 xl:gap-8 ml-auto">
-            {/* Navigation Links — Placed with spacious gap from logo */}
-            <nav className="flex items-center gap-2 xl:gap-4" aria-label="Main navigation">
+            <nav className="flex items-center gap-6 xl:gap-8" aria-label="Main navigation">
               {navLinks.map((link) => {
                 const isActive = location.pathname === link.path;
                 return (
                   <Link
                     key={link.name}
                     to={link.path}
-                    className={`relative px-3.5 py-2 text-sm tracking-widest transition-colors duration-300 ${
+                    className={`relative flex items-center gap-1.5 py-1 text-sm tracking-wider font-serif transition-colors duration-300 ${
                       isActive
-                        ? 'text-[#000000] font-semibold'
-                        : 'text-[#555555] hover:text-[#000000]'
+                        ? 'text-[#D4B896] font-semibold'
+                        : 'text-white/90 hover:text-[#D4B896]'
                     }`}
                   >
                     {link.name}
+                    {link.hasDropdown && <FiChevronDown size={14} className="text-white/70" />}
                     {isActive && (
                       <motion.div
-                        className="absolute bottom-0 left-3.5 right-3.5 h-[2px] bg-[#000000] rounded-full"
+                        className="absolute -bottom-1 left-0 right-0 h-[2px] bg-[#D4B896] shadow-[0_0_6px_#D4B896]"
                         layoutId="navbar-underline"
                         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                       />
@@ -107,56 +107,22 @@ const Navbar = () => {
               })}
             </nav>
 
-            {/* Divider */}
-            <div className="h-6 w-[1px] bg-[#EAEAEA]" />
-
-            {/* Right Actions */}
-            <div className="flex items-center gap-3">
-              {/* Search Button */}
-              <button
-                onClick={() => setIsSearchOpen(true)}
-                className="w-10 h-10 rounded-full border border-[#EAEAEA] bg-[#FAFAFA] text-[#000000] hover:bg-[#F3F3F3] hover:border-[#000000] flex items-center justify-center transition-all duration-300"
-                aria-label="Open search"
-              >
-                <FiSearch size={16} />
-              </button>
-
-              {/* WhatsApp Icon */}
-              <a
-                href="https://wa.me/919876543210?text=Hi%20Bobby%20Studio!%20I%20would%20like%20to%20inquire%20about%20your%20photography%20services."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full border border-[#EAEAEA] bg-[#FAFAFA] text-[#000000] hover:bg-[#F3F3F3] hover:border-[#000000] flex items-center justify-center transition-all duration-300"
-                aria-label="Chat on WhatsApp"
-              >
-                <FaWhatsapp size={18} />
-              </a>
-
-              {/* Primary Button */}
-              <Link
-                to="/book"
-                className="relative group overflow-hidden px-7 py-3.5 bg-[#000000] text-[#FFFFFF] text-xs font-display font-semibold tracking-[0.2em] rounded-full transition-all duration-500 shadow-[0_10px_30px_rgba(0,0,0,0.15)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.25)] hover:scale-[1.05] uppercase active:scale-95 flex items-center gap-2 flex-shrink-0"
-              >
-                <span className="relative z-10 flex items-center gap-2">
-                  BOOK NOW
-                  <FiArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                </span>
-                <span className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full shimmer-effect" />
-              </Link>
-            </div>
+            {/* BOOK NOW Button */}
+            <Link
+              to="/book"
+              className="relative group overflow-hidden px-6 py-2.5 bg-black border border-white/25 text-white text-xs font-display font-semibold tracking-[0.18em] rounded-full transition-all duration-300 shadow-[0_4px_15px_rgba(0,0,0,0.4)] hover:border-[#D4B896] hover:text-[#D4B896] hover:scale-[1.03] uppercase flex items-center gap-2 flex-shrink-0"
+            >
+              <span className="relative z-10 flex items-center gap-2">
+                BOOK NOW
+                <FiArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
+              </span>
+            </Link>
           </div>
 
           {/* Mobile Hamburger */}
           <div className="flex lg:hidden items-center gap-2">
             <button
-              onClick={() => setIsSearchOpen(true)}
-              className="p-2 text-[#000000]"
-              aria-label="Open search"
-            >
-              <FiSearch size={22} />
-            </button>
-            <button
-              className="relative z-10 p-2 text-[#000000]"
+              className="relative z-10 p-2 text-white"
               onClick={() => setIsMobileOpen(!isMobileOpen)}
               aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={isMobileOpen}
@@ -231,13 +197,13 @@ const Navbar = () => {
       <AnimatePresence>
         {isMobileOpen && (
           <motion.div
-            className="fixed inset-0 z-40 bg-white/98 backdrop-blur-2xl flex flex-col items-center justify-center lg:hidden"
+            className="fixed inset-0 z-40 bg-[#0A0A0A]/98 backdrop-blur-2xl flex flex-col items-center justify-center lg:hidden text-white"
             initial={{ opacity: 0, clipPath: 'circle(0% at calc(100% - 40px) 40px)' }}
             animate={{ opacity: 1, clipPath: 'circle(150% at calc(100% - 40px) 40px)' }}
             exit={{ opacity: 0, clipPath: 'circle(0% at calc(100% - 40px) 40px)' }}
             transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
-            <nav className="flex flex-col items-center gap-4" aria-label="Mobile navigation">
+            <nav className="flex flex-col items-center gap-5" aria-label="Mobile navigation">
               {navLinks.map((link, i) => (
                 <motion.div
                   key={link.name}
@@ -249,7 +215,7 @@ const Navbar = () => {
                   <Link
                     to={link.path}
                     className={`text-2xl font-luxury tracking-wider transition-colors duration-300 ${
-                      location.pathname === link.path ? 'text-[#000000] font-bold' : 'text-[#555555] hover:text-[#000000]'
+                      location.pathname === link.path ? 'text-[#D4B896] font-bold' : 'text-white/70 hover:text-white'
                     }`}
                   >
                     {link.name}
@@ -264,15 +230,15 @@ const Navbar = () => {
               >
                 <Link
                   to="/book"
-                  className="px-10 py-3.5 bg-[#000000] text-white text-sm font-display font-semibold tracking-widest rounded-full shadow-lg uppercase"
+                  className="px-10 py-3.5 bg-black border border-white/30 text-white text-sm font-display font-semibold tracking-widest rounded-full shadow-lg uppercase hover:border-[#D4B896] hover:text-[#D4B896] transition-colors"
                 >
                   BOOK NOW
                 </Link>
                 <a
-                  href="https://wa.me/919876543210"
+                  href="https://wa.me/919949216881"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-[#000000] font-medium"
+                  className="flex items-center gap-2 text-sm text-white/80 hover:text-white font-medium"
                 >
                   <FaWhatsapp size={16} /> Chat on WhatsApp
                 </a>
@@ -280,18 +246,18 @@ const Navbar = () => {
             </nav>
 
             <motion.div
-              className="absolute bottom-10 flex items-center gap-6 text-[#555555]"
+              className="absolute bottom-10 flex items-center gap-6 text-white/60"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7 }}
             >
-              <a href="tel:+919876543210" className="hover:text-[#000000] transition-colors" aria-label="Call us">
+              <a href="tel:+919949216881" className="hover:text-white transition-colors" aria-label="Call us">
                 <FiPhone size={20} />
               </a>
-              <a href="mailto:hello@bobbystudio.com" className="hover:text-[#000000] transition-colors" aria-label="Email us">
+              <a href="mailto:subramanyambala720@gmail.com" className="hover:text-white transition-colors" aria-label="Email us">
                 <FiMail size={20} />
               </a>
-              <a href="https://instagram.com/bobbystudio" target="_blank" rel="noopener noreferrer" className="hover:text-[#000000] transition-colors" aria-label="Instagram">
+              <a href="https://instagram.com/bobbyyyy.x_" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="Instagram">
                 <FiInstagram size={20} />
               </a>
             </motion.div>

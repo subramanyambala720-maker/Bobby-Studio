@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   FiArrowRight, FiArrowUpRight, FiPlay, FiCamera, FiHeart, FiStar,
   FiAward, FiUsers, FiCalendar, FiFilm, FiImage, FiMapPin, FiX,
   FiCheck, FiMessageSquare, FiTrendingUp, FiCheckCircle,
   FiChevronLeft, FiChevronRight
 } from 'react-icons/fi';
-import { FaWhatsapp, FaInstagram } from 'react-icons/fa';
+import { FaWhatsapp, FaInstagram, FaFacebookF, FaYoutube, FaPinterestP } from 'react-icons/fa';
 import CountUp from 'react-countup';
 import { useInView } from 'react-intersection-observer';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -24,6 +24,12 @@ import FloatingCard from '@/components/animations/FloatingCard';
 import MagneticElement from '@/components/animations/MagneticElement';
 import Button from '@/components/ui/Button';
 import SectionHeading from '@/components/ui/SectionHeading';
+import Masonry from '@/components/ui/Masonry';
+// @ts-ignore
+import CircularGallery from '@/components/ui/CircularGallery';
+import BlurText from '@/components/ui/BlurText';
+import SplitText from '@/components/ui/SplitText';
+import GlassIcons, { type GlassIconsItem } from '@/components/ui/GlassIcons';
 
 /* ============================================
    DATA DEFINITIONS
@@ -46,14 +52,23 @@ const allServices = [
   { title: 'Drone Photography', category: 'Cinematography', desc: 'Breathtaking 4K aerial imagery capturing grandeur from above.', icon: FiMapPin, image: '/images/drone_service.jpg' },
 ];
 
-const portfolioCategories = ['All', 'Wedding', 'Pre Wedding', 'Baby', 'Corporate', 'Drone', 'Product', 'Interior'];
+const portfolioCategories = ['All', 'Wedding', 'Pre Wedding', 'Baby', 'Family', 'Drone', 'Events'];
 
 const portfolioItems = [
-  { id: 4, title: 'Newborn Dreams', category: 'Baby', color: 'from-pink-900/70 to-rose-900/50', aspect: 'tall' },
-  { id: 5, title: 'CEO Executive Branding', category: 'Corporate', color: 'from-slate-800/70 to-gray-900/50', aspect: 'square' },
-  { id: 6, title: 'Aerial View of Lake Palace', category: 'Drone', color: 'from-sky-900/70 to-blue-900/50', aspect: 'wide' },
-  { id: 7, title: 'Diamond Collection 2026', category: 'Product', color: 'from-zinc-800/70 to-slate-900/50', aspect: 'square' },
-  { id: 8, title: 'Heritage Haveli Architecture', category: 'Interior', color: 'from-amber-900/70 to-yellow-900/50', aspect: 'tall' },
+  { id: '1', title: 'South Indian Wedding Ceremony', category: 'Wedding', img: '/images/new_anim_wedding_family.jpg', height: 580, url: '/gallery' },
+  { id: '2', title: 'Joyful Haldi Celebrations', category: 'Pre Wedding', img: '/images/new_anim_haldi_ceremony.jpg', height: 460, url: '/gallery' },
+  { id: '3', title: 'Aarohi 1st Birthday Shoot', category: 'Baby', img: '/images/new_anim_aarohi_birthday.jpg', height: 600, url: '/gallery' },
+  { id: '4', title: 'Fine Art Album Spread', category: 'Wedding', img: '/images/new_anim_album_spread.jpg', height: 480, url: '/gallery' },
+  { id: '5', title: 'Golden Milestone Birthday', category: 'Baby', img: '/images/new_anim_baby_one.jpg', height: 420, url: '/gallery' },
+  { id: '6', title: 'Royal Wedding Udaipur', category: 'Wedding', img: '/images/wedding_photography.jpg', height: 500, url: '/gallery' },
+  { id: '7', title: 'Pre-Wedding Sunset Romance', category: 'Pre Wedding', img: '/images/pre_wedding_service.jpg', height: 380, url: '/gallery' },
+  { id: '8', title: 'Traditional South Indian Bride', category: 'Wedding', img: '/images/our_story_bride_bg.png', height: 480, url: '/gallery' },
+  { id: '9', title: 'Newborn Dreams Session', category: 'Baby', img: '/images/baby_shoot_service.jpg', height: 360, url: '/gallery' },
+  { id: '10', title: 'Maternity Glow Portrait', category: 'Family', img: '/images/maternity_service.jpg', height: 520, url: '/gallery' },
+  { id: '11', title: '4K Aerial Drone Perspective', category: 'Drone', img: '/images/drone_service.jpg', height: 400, url: '/gallery' },
+  { id: '12', title: 'Engagement Ring Promise', category: 'Pre Wedding', img: '/images/engagement_service.jpg', height: 440, url: '/gallery' },
+  { id: '13', title: 'Birthday Celebration Highlights', category: 'Events', img: '/images/birthday_service.jpg', height: 350, url: '/gallery' },
+  { id: '14', title: 'Heritage Wedding Album', category: 'Wedding', img: '/images/about_hero_banner.jpg', height: 540, url: '/gallery' },
 ];
 
 const videoShowcase = [
@@ -84,33 +99,10 @@ const videoShowcase = [
 ];
 
 const whyChooseUs = [
-  { title: 'Award Winning Team', desc: 'Recognized with 150+ national & international photography awards.', icon: FiAward },
-  { title: '4K Cinematic Videos', desc: 'Shot on Cinema Line cameras with color grading by expert colorists.', icon: FiFilm },
-  { title: 'Professional Editors', desc: 'In-house post-production team delivering magazine-ready retouches.', icon: FiStar },
-  { title: 'Fast Delivery', desc: 'Sneak peek photos in 48 hours and final gallery in 2-3 weeks.', icon: FiTrendingUp },
-  { title: 'Premium Albums', desc: 'Handcrafted Italian leather flush-mount albums imported from Milan.', icon: FiImage },
-  { title: 'Drone Coverage', desc: 'Licensed FAA/DGCA drone operators for legal 4K aerial shots.', icon: FiMapPin },
-  { title: 'Creative Storytelling', desc: 'Documentary candid approach that captures raw, genuine emotions.', icon: FiHeart },
-  { title: 'Luxury Experience', desc: 'Dedicated concierge manager for seamless coordination.', icon: FiUsers },
-];
-
-const packagesList = [
-  {
-    name: 'Silver', tier: 'Essential', price: '₹49,999', originalPrice: '₹59,999', popular: false,
-    features: ['Half Day Coverage (6 Hours)', 'One Senior Photographer', '300+ Color Edited Photos', 'Online Digital Gallery', 'Digital Delivery in 14 Days', 'Pre-Shoot Consultation']
-  },
-  {
-    name: 'Gold', tier: 'Most Popular', price: '₹99,999', originalPrice: '₹1,29,999', popular: true,
-    features: ['Full Day Coverage (12 Hours)', 'Two Senior Photographers', '500+ Color Edited Photos', '4K Cinematic Highlight Film (5 min)', 'Drone Aerial Coverage', 'Handcrafted Leather Album (40 Pages)', 'USB & Digital Delivery']
-  },
-  {
-    name: 'Platinum', tier: 'Luxury', price: '₹1,49,999', originalPrice: '₹1,79,999', popular: false,
-    features: ['2-Day Full Event Coverage', '3 Photographers + 2 Cinematographers', '800+ Edited Photos', 'Full Wedding Documentary Film (20 min)', '4K Drone Aerial Coverage', '2 Premium Italian Albums', 'Same-Day Reel Edit for Socials']
-  },
-  {
-    name: 'Diamond', tier: 'Royal Edition', price: '₹2,49,999', originalPrice: '₹2,99,999', popular: false,
-    features: ['Unlimited Multi-Day Coverage', 'Full Master Team of 8 Artists', 'Unlimited Edited Photos', 'Cinematic Feature Film + Teaser', 'Unlimited Drone Flights', '3 Italian Albums + Mini Albums', 'Live HD Streaming', 'Pre-Wedding Shoot Included']
-  },
+  { title: '4K Cinematic Videos', desc: 'Shot on Cinema Line cameras with color grading by expert colorists.', icon: FiFilm, targetId: 'cinematography' },
+  { title: 'Professional Editors', desc: 'In-house post-production team delivering magazine-ready retouches.', icon: FiStar, href: '/about#team' },
+  { title: 'Tailored Packages', desc: 'Customized photography & film packages designed for your dream vision.', icon: FiCheckCircle, href: '/packages' },
+  { title: 'Premium Albums', desc: 'Handcrafted Italian leather flush-mount albums imported from Milan.', icon: FiImage, href: '/gallery' },
 ];
 
 const testimonials = [
@@ -215,29 +207,27 @@ const HeroSection = () => {
       </div>
 
       {/* Fixed Hero Content — Unaffected by Image Slideshow Transitions */}
-      <div className="relative z-20 container-premium text-center px-4 max-w-4xl mx-auto">
-        {/* Main Heading — Perfect 2-Line Layout */}
-        <div className="mb-1">
-          <motion.h1
-            className="text-hero font-luxury text-white leading-[1.1] font-semibold drop-shadow-md whitespace-nowrap"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.35 }}
-          >
-            Every Moment Deserves
-          </motion.h1>
+      <div className="relative z-20 container-premium text-center px-4 max-w-5xl mx-auto pt-24 md:pt-36">
+        {/* Main Heading — Animated with React Bits BlurText */}
+        <div className="mb-2 flex justify-center text-center">
+          <BlurText
+            text="Every Moment Deserves"
+            as="h1"
+            delay={150}
+            animateBy="words"
+            direction="top"
+            className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-luxury text-white leading-[1.05] font-semibold drop-shadow-lg justify-center text-center"
+          />
         </div>
-        <div className="mb-8">
-          <motion.h1
-            className="text-hero font-luxury leading-[1.1] whitespace-nowrap"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.45 }}
-          >
-            <span className="text-white italic font-bold drop-shadow-lg">
-              Timeless Perfection
-            </span>
-          </motion.h1>
+        <div className="mb-10 flex justify-center text-center">
+          <BlurText
+            text="Timeless Perfection"
+            as="h1"
+            delay={150}
+            animateBy="words"
+            direction="bottom"
+            className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-luxury leading-[1.05] text-white italic font-bold drop-shadow-xl justify-center text-center"
+          />
         </div>
 
         {/* Action Buttons */}
@@ -365,60 +355,79 @@ const StatsSection = () => {
 
 const AboutSection = () => {
   return (
-    <section className="section-padding bg-white overflow-hidden">
+    <section className="section-padding bg-[#FAF8F5] border-y border-[#EAEAEA] overflow-hidden">
       <div className="container-premium">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Left: Pre-Wedding Photo Card */}
-          <FadeIn direction="left">
-            <div className="relative aspect-[4/5] rounded-3xl overflow-hidden bg-[#FAFAFA] border border-[#EAEAEA] group shadow-xl">
-              <img
-                src="/images/about_studio_story.png"
-                alt="Bobby Studio Pre-Wedding Photography"
-                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          {/* Left Column: Story Text */}
+          <div className="lg:col-span-5 space-y-5">
+            <FadeIn direction="left">
+              <SplitText
+                text="Bobby Studio – Because Every Moment Matters"
+                tag="h2"
+                delay={45}
+                duration={0.8}
+                ease="power3.out"
+                splitType="words"
+                from={{ opacity: 0, y: 35 }}
+                to={{ opacity: 1, y: 0 }}
+                threshold={0.1}
+                textAlign="left"
+                className="text-3xl sm:text-4xl lg:text-5xl font-luxury text-[#000000] font-semibold leading-[1.2] mb-6"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-              <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/90 rounded-2xl border border-[#EAEAEA] backdrop-blur-xl">
-                <p className="text-[#000000] text-xs font-display tracking-[0.25em] uppercase mb-1 font-semibold">Pre-Wedding • Romance</p>
-                <h4 className="text-[#000000] font-luxury text-xl font-semibold">Capturing Pure Emotion</h4>
+              <p className="text-[#444444] text-sm md:text-base leading-relaxed font-light">
+                At Bobby Studio, we believe every moment tells a unique story worth preserving. From life’s biggest celebrations to professional brand campaigns, we capture memories and create visuals that leave a lasting impression.
+              </p>
+              <p className="text-[#444444] text-sm md:text-base leading-relaxed font-light">
+                We specialise in weddings, pre-wedding shoots, maternity, baby photography, corporate events, product photography, drone coverage, podcast productions, homestays, dance performances, and landscape photography. Our creative approach ensures every project reflects genuine emotions, striking visuals, and exceptional attention to detail.
+              </p>
+              <p className="text-[#444444] text-sm md:text-base leading-relaxed font-light">
+                With years of experience, industry-leading equipment, and a passionate creative team, we deliver photography and videography that are authentic, artistic, and timeless—helping individuals, families, businesses, and brands preserve their stories for years to come.
+              </p>
+              <div className="pt-4">
+                <Link
+                  to="/about"
+                  className="inline-flex items-center gap-2 text-xs font-display tracking-[0.15em] text-[#000000] hover:text-[#555555] font-semibold uppercase transition-colors group"
+                >
+                  <span>Know More About Us</span>
+                  <FiChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
               </div>
-              <div className="absolute top-6 left-6 px-4 py-2 bg-white/90 backdrop-blur-md rounded-full text-xs text-[#000000] font-display font-semibold uppercase tracking-wider border border-[#EAEAEA]">
-                Est. 2012
-              </div>
-              <div className="absolute top-6 right-6 px-4 py-2 bg-white/90 backdrop-blur-md rounded-full text-xs text-[#000000] font-display border border-[#EAEAEA]">
-                50+ Awards
-              </div>
-            </div>
-          </FadeIn>
+            </FadeIn>
+          </div>
 
-          {/* Right: Content */}
-          <FadeIn direction="right">
-            <div>
-              <p className="text-xs text-[#555555] tracking-[0.25em] uppercase font-display mb-3">About Bobby Studio</p>
-              <h2 className="text-display font-luxury text-[#000000] mb-6 leading-tight font-semibold">
-                Crafting Memories That{' '}
-                <span className="italic font-bold">Last Forever</span>
-              </h2>
-              <p className="text-[#555555] text-clamp-base leading-relaxed mb-6 font-light">
-                Bobby Studio is a premium photography brand specializing in weddings, pre-weddings, maternity, baby shoots, fashion, commercial photography, cinematography, and luxury storytelling.
-              </p>
-              <p className="text-[#555555] text-sm leading-relaxed mb-8 font-light">
-                With over a decade of excellence, our team of 25+ master photographers, filmmakers, and colorists have documented over 350 luxury weddings across Udaipur, Jaipur, Goa, Kerala, and international destinations.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center gap-4">
-                <Link to="/about">
-                  <button className="px-8 py-3.5 bg-[#000000] text-[#FFFFFF] text-xs font-display font-semibold tracking-[0.2em] rounded-full transition-all duration-500 shadow-[0_10px_30px_rgba(0,0,0,0.12)] hover:scale-105 uppercase flex items-center gap-2">
-                    <span>Discover Our Story</span>
-                    <FiArrowRight size={15} />
-                  </button>
-                </Link>
-                <Link to="/gallery">
-                  <button className="px-8 py-3.5 bg-[#FFFFFF] border border-[#000000] text-[#000000] hover:bg-[#000000] hover:text-[#FFFFFF] text-xs font-display font-semibold tracking-[0.2em] rounded-full transition-all duration-500 uppercase">
-                    View Recent Works
-                  </button>
-                </Link>
+          {/* Right Column: 3 Larger Side-by-Side Vertical Photo Cards */}
+          <div className="lg:col-span-7">
+            <FadeIn direction="right">
+              <div className="grid grid-cols-3 gap-3 md:gap-5 items-center">
+                {/* Photo 1: Toddler Outdoor Shoot */}
+                <div className="h-[340px] sm:h-[440px] md:h-[500px] lg:h-[540px] rounded-2xl md:rounded-3xl overflow-hidden shadow-xl border border-black/10 group bg-white">
+                  <img
+                    src="/images/toddler_walking_parents.jpg"
+                    alt="Bobby Studio Baby Photography"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                </div>
+
+                {/* Photo 2: Romantic Night Couple (Staggered Down) */}
+                <div className="h-[340px] sm:h-[440px] md:h-[500px] lg:h-[540px] rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl border border-black/10 group bg-white transform translate-y-4">
+                  <img
+                    src="/images/portfolio_prewedding_romance.jpg"
+                    alt="Bobby Studio Pre-Wedding Photography"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                </div>
+
+                {/* Photo 3: Maternity Studio Portrait */}
+                <div className="h-[340px] sm:h-[440px] md:h-[500px] lg:h-[540px] rounded-2xl md:rounded-3xl overflow-hidden shadow-xl border border-black/10 group bg-white">
+                  <img
+                    src="/images/portfolio_maternity_silhouette.jpg"
+                    alt="Bobby Studio Maternity Photography"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                </div>
               </div>
-            </div>
-          </FadeIn>
+            </FadeIn>
+          </div>
         </div>
       </div>
     </section>
@@ -433,12 +442,31 @@ const ServicesSection = () => {
   return (
     <section className="section-padding bg-[#FAFAFA]">
       <div className="container-premium">
-        <SectionHeading
-          label="Our Services"
-          title="World-Class Photography &"
-          titleAccent="Filmmaking"
-          description="A complete suite of luxury visual services tailored to immortalize your most precious moments."
-        />
+        <div className="text-center mb-12 md:mb-16">
+          <p className="text-xs md:text-sm text-[#000000] tracking-[0.3em] uppercase font-display font-bold mb-3">
+            Our Services
+          </p>
+          <SplitText
+            text="World-Class Photography & Filmmaking"
+            tag="h2"
+            delay={50}
+            duration={0.85}
+            ease="power3.out"
+            splitType="words"
+            from={{ opacity: 0, y: 40 }}
+            to={{ opacity: 1, y: 0 }}
+            threshold={0.1}
+            textAlign="center"
+            className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-luxury text-[#000000] font-semibold leading-[1.12] mb-4 max-w-5xl mx-auto"
+          />
+          <div className="flex justify-center mt-6">
+            <div className="w-16 h-[2.5px] bg-[#000000] rounded-full" />
+            <div className="w-4 h-[2.5px] bg-[#000000]/40 rounded-full ml-2" />
+          </div>
+          <p className="text-[#444444] text-base md:text-xl leading-relaxed mt-6 font-light max-w-3xl mx-auto">
+            A complete suite of luxury visual services tailored to immortalize your most precious moments.
+          </p>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {allServices.map((service, i) => (
@@ -456,9 +484,6 @@ const ServicesSection = () => {
                     ) : (
                       <service.icon size={44} className="text-[#000000] group-hover:scale-110 transition-transform duration-500" />
                     )}
-                    <div className="absolute top-3 right-3 px-2.5 py-1 bg-white/90 backdrop-blur-md border border-[#EAEAEA] rounded-full text-[10px] text-[#000000] tracking-wider uppercase font-semibold shadow-sm">
-                      {service.category}
-                    </div>
                   </div>
 
                   {/* Card Content */}
@@ -499,7 +524,7 @@ const PortfolioSection = () => {
     : portfolioItems.filter((i) => i.category === activeCategory);
 
   return (
-    <section className="section-padding bg-white">
+    <section className="pt-16 pb-4 bg-white">
       <div className="container-premium">
         <SectionHeading
           label="Featured Portfolio"
@@ -525,36 +550,18 @@ const PortfolioSection = () => {
           ))}
         </div>
 
-        {/* Gallery Grid */}
-        <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" layout>
-          <AnimatePresence mode="popLayout">
-            {filteredItems.map((item, i) => (
-              <motion.div
-                key={item.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.35, delay: i * 0.04 }}
-                className={`${item.aspect === 'wide' ? 'sm:col-span-2' : ''}`}
-              >
-                <Link to="/gallery" className="group relative block rounded-2xl overflow-hidden bg-card">
-                  <div className={`w-full ${
-                    item.aspect === 'tall' ? 'aspect-[3/4]' :
-                    item.aspect === 'wide' ? 'aspect-video' : 'aspect-square'
-                  } bg-gradient-to-br ${item.color} flex items-center justify-center p-6`}>
-                    <FiCamera size={40} className="text-white/20 group-hover:scale-110 transition-transform duration-500" />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300" />
-                    <div className="absolute bottom-0 left-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white">
-                      <p className="text-amber-300 text-xs tracking-wider uppercase mb-1">{item.category}</p>
-                      <h4 className="text-base font-luxury text-white font-semibold">{item.title}</h4>
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+        {/* React Bits Masonry Layout */}
+        <Masonry
+          items={filteredItems}
+          ease="power3.out"
+          duration={0.6}
+          stagger={0.05}
+          animateFrom="bottom"
+          scaleOnHover={true}
+          hoverScale={0.96}
+          blurToFocus={true}
+          colorShiftOnHover={false}
+        />
       </div>
     </section>
   );
@@ -566,7 +573,7 @@ const PortfolioSection = () => {
 
 const VideoShowcaseSection = () => {
   return (
-    <section className="section-padding bg-white text-[#000000] overflow-hidden">
+    <section id="cinematography" className="pt-6 pb-20 bg-white text-[#000000] overflow-hidden scroll-mt-24">
       <div className="container-premium">
         <SectionHeading
           label="Cinematography"
@@ -626,6 +633,19 @@ const VideoShowcaseSection = () => {
    ============================================ */
 
 const WhyChooseSection = () => {
+  const navigate = useNavigate();
+
+  const handleCardClick = (item: typeof whyChooseUs[0]) => {
+    if (item.targetId) {
+      const element = document.getElementById(item.targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    } else if (item.href) {
+      navigate(item.href);
+    }
+  };
+
   return (
     <section className="section-padding bg-white">
       <div className="container-premium">
@@ -639,12 +659,17 @@ const WhyChooseSection = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {whyChooseUs.map((item, i) => (
             <FadeIn key={item.title} delay={i * 0.08}>
-              <div className="p-6 glass rounded-2xl text-center hover:border-primary/30 transition-all duration-300 hover:shadow-gold h-full flex flex-col items-center">
-                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-primary">
+              <div
+                onClick={() => handleCardClick(item)}
+                className={`p-6 glass rounded-2xl text-center hover:border-black/40 transition-all duration-300 hover:shadow-xl h-full flex flex-col items-center group hover:-translate-y-1 ${
+                  item.targetId || item.href ? 'cursor-pointer' : ''
+                }`}
+              >
+                <div className="w-14 h-14 rounded-full bg-black/5 flex items-center justify-center mb-4 text-black group-hover:bg-black group-hover:text-white transition-colors duration-300">
                   <item.icon size={24} />
                 </div>
-                <h3 className="text-base font-luxury text-text font-bold mb-2">{item.title}</h3>
-                <p className="text-muted text-xs leading-relaxed">{item.desc}</p>
+                <h3 className="text-base font-luxury text-black font-bold mb-2 group-hover:text-black transition-colors">{item.title}</h3>
+                <p className="text-[#555555] text-xs leading-relaxed">{item.desc}</p>
               </div>
             </FadeIn>
           ))}
@@ -654,69 +679,6 @@ const WhyChooseSection = () => {
   );
 };
 
-/* ============================================
-   PACKAGES SECTION
-   ============================================ */
-
-const PackagesSection = () => {
-  return (
-    <section className="section-padding bg-gray-50/50">
-      <div className="container-premium">
-        <SectionHeading
-          label="Transparent Investment"
-          title="Luxury Photography"
-          titleAccent="Packages"
-          description="Transparent, value-packed investment options designed for every celebration."
-        />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {packagesList.map((pkg, i) => (
-            <FadeIn key={pkg.name} delay={i * 0.1}>
-              <FloatingCard intensity={3}>
-                <div className={`relative h-full glass rounded-2xl p-6 flex flex-col transition-all duration-300 ${
-                  pkg.popular ? 'border-2 border-primary shadow-gold bg-white' : ''
-                }`}>
-                  {pkg.popular && (
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-4 py-1 bg-gradient-gold text-background text-[10px] font-bold uppercase tracking-widest rounded-full shadow-gold">
-                      Most Popular
-                    </div>
-                  )}
-
-                  <div className="mb-4">
-                    <p className="text-xs text-primary tracking-wider uppercase font-display">{pkg.tier}</p>
-                    <h3 className="text-2xl font-luxury text-text font-bold">{pkg.name}</h3>
-                  </div>
-
-                  <div className="mb-6 pb-6 border-b border-glass-border">
-                    <span className="text-3xl font-display font-bold text-text">{pkg.price}</span>
-                    {pkg.originalPrice && (
-                      <span className="text-xs text-muted line-through ml-2">{pkg.originalPrice}</span>
-                    )}
-                  </div>
-
-                  <ul className="space-y-3 mb-8 flex-1">
-                    {pkg.features.map((f) => (
-                      <li key={f} className="flex items-start gap-2 text-xs text-muted">
-                        <FiCheckCircle size={14} className="text-primary flex-shrink-0 mt-0.5" />
-                        <span>{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Link to="/book" className="block mt-auto">
-                    <Button variant={pkg.popular ? 'primary' : 'glass'} fullWidth size="md">
-                      Book {pkg.name}
-                    </Button>
-                  </Link>
-                </div>
-              </FloatingCard>
-            </FadeIn>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
 
 /* ============================================
    TESTIMONIALS CAROUSEL
@@ -774,103 +736,59 @@ const TestimonialsSection = () => {
   );
 };
 
-/* ============================================
-   INSTAGRAM FEED SECTION
-   ============================================ */
+const circularGalleryItems = [
+  { image: '/images/new_anim_wedding_family.jpg', text: '' },
+  { image: '/images/new_anim_haldi_ceremony.jpg', text: '' },
+  { image: '/images/new_anim_aarohi_birthday.jpg', text: '' },
+  { image: '/images/new_anim_album_spread.jpg', text: '' },
+  { image: '/images/new_anim_baby_one.jpg', text: '' },
+  { image: '/images/new_anim_wedding_family.jpg', text: '' },
+  { image: '/images/new_anim_haldi_ceremony.jpg', text: '' },
+  { image: '/images/new_anim_aarohi_birthday.jpg', text: '' },
+];
+
+const socialGlassIcons: GlassIconsItem[] = [
+  { icon: <FaInstagram size={20} />, label: 'Instagram', href: 'https://instagram.com/bobbyyyy.x_' },
+  { icon: <FaFacebookF size={18} />, label: 'Facebook', href: 'https://facebook.com' },
+  { icon: <FaYoutube size={20} />, label: 'YouTube', href: 'https://youtube.com' },
+  { icon: <FaPinterestP size={18} />, label: 'Pinterest', href: 'https://pinterest.com' },
+  { icon: <FaWhatsapp size={20} />, label: 'WhatsApp', href: 'https://wa.me/919949216881?text=Hi%20Bobby%20Studio!' }
+];
 
 const InstagramSection = () => {
   return (
-    <section className="py-16 bg-gray-50/50">
-      <div className="container-premium text-center mb-10">
-        <p className="text-xs text-primary tracking-[0.25em] uppercase font-display mb-2">Follow Our Journey</p>
-        <h2 className="text-title font-luxury text-text">
-          @bobbystudio on <span className="text-gradient-gold italic">Instagram</span>
+    <section className="py-16 bg-[#FAF8F5] border-t border-[#EAEAEA] overflow-hidden">
+      <div className="container-premium text-center mb-4">
+        <p className="text-xs text-[#555555] tracking-[0.25em] uppercase font-display mb-2">Follow Our Journey</p>
+        <h2 className="text-3xl md:text-4xl font-luxury text-[#000000] font-semibold">
+          @bobbystudio on <span className="italic font-normal">Instagram</span>
         </h2>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 px-2">
-        {instagramPosts.map((post) => (
-          <a
-            key={post.id}
-            href="https://instagram.com/bobbystudio"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group relative aspect-square bg-neutral-900 rounded-xl overflow-hidden block"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-amber-900/60 to-black flex items-center justify-center p-4">
-              <FaInstagram size={32} className="text-white/30 group-hover:scale-110 transition-transform duration-300" />
-            </div>
-            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center text-white text-xs font-display">
-              <div className="text-center p-2">
-                <FiHeart className="mx-auto mb-1 text-rose-400" size={16} />
-                <span>{post.likes}</span>
-              </div>
-            </div>
-          </a>
-        ))}
-      </div>
-
-      <div className="text-center mt-8">
-        <a
-          href="https://instagram.com/bobbystudio"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-gold text-background text-xs font-display font-semibold tracking-wider rounded-full shadow-gold uppercase"
-        >
-          <FaInstagram size={14} /> Follow Bobby Studio
-        </a>
-      </div>
-    </section>
-  );
-};
-
-/* ============================================
-   LATEST BLOGS SECTION
-   ============================================ */
-
-const BlogsSection = () => {
-  return (
-    <section className="section-padding bg-white">
-      <div className="container-premium">
-        <SectionHeading
-          label="Journal & Insights"
-          title="Latest From Our"
-          titleAccent="Blog"
-          description="Photography tips, destination guides, and behind-the-scenes stories."
+      {/* 3D WebGL Circular Gallery Component from React Bits */}
+      <div className="w-full h-[460px] md:h-[540px] relative">
+        <CircularGallery
+          items={circularGalleryItems}
+          bend={3}
+          textColor="#000000"
+          borderRadius={0.06}
+          scrollSpeed={2}
+          scrollEase={0.04}
         />
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {latestBlogs.map((blog, i) => (
-            <FadeIn key={blog.id} delay={i * 0.15}>
-              <Link to={`/blog`} className="group flex flex-col h-full glass rounded-2xl overflow-hidden hover:border-primary/30 transition-all duration-300 hover:shadow-gold">
-                <div className="aspect-video bg-gradient-to-br from-amber-950/60 to-neutral-900 flex items-center justify-center p-6 relative">
-                  <FiImage size={40} className="text-white/20 group-hover:scale-110 transition-transform duration-500" />
-                  <span className="absolute top-4 left-4 px-3 py-1 glass rounded-full text-[10px] text-primary tracking-wider uppercase">
-                    {blog.category}
-                  </span>
-                </div>
-                <div className="p-6 flex flex-col flex-1">
-                  <div className="flex items-center justify-between text-[11px] text-muted mb-3">
-                    <span>{blog.date}</span>
-                    <span>{blog.readTime}</span>
-                  </div>
-                  <h3 className="text-base font-luxury text-text font-bold mb-3 group-hover:text-primary transition-colors flex-1">
-                    {blog.title}
-                  </h3>
-                  <p className="text-muted text-xs leading-relaxed mb-4 line-clamp-2">{blog.excerpt}</p>
-                  <div className="inline-flex items-center gap-2 text-xs font-display text-primary font-semibold group-hover:gap-3 transition-all duration-300 pt-3 border-t border-glass-border">
-                    <span>Read Article</span>
-                    <FiArrowRight size={14} />
-                  </div>
-                </div>
-              </Link>
-            </FadeIn>
-          ))}
-        </div>
+      {/* 3D Glassmorphism Social Links */}
+      <div className="container-premium text-center mt-8">
+        <p className="text-xs text-[#000000] tracking-[0.25em] uppercase font-display font-bold mb-4">
+          Follow Bobby Studio
+        </p>
+        <GlassIcons items={socialGlassIcons} className="justify-center" />
       </div>
     </section>
   );
 };
+
+
 
 /* ============================================
    CONTACT CTA SECTION
@@ -878,17 +796,22 @@ const BlogsSection = () => {
 
 const ContactCTASection = () => {
   return (
-    <section className="section-padding bg-black text-white relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-amber-950/40 via-neutral-900 to-black opacity-80" />
-      <div className="container-premium relative z-10 text-center">
+    <section className="section-padding bg-black text-white relative overflow-hidden min-h-[460px] flex items-center justify-center">
+      {/* Background Image with Vibrant Light & Subtle Gradient */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src="/images/cta_banner_wedding.jpg"
+          alt="Bobby Studio Wedding Album Showcase"
+          className="w-full h-full object-cover object-center brightness-110 contrast-[1.05]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/30 to-black/55" />
+      </div>
+
+      <div className="container-premium relative z-10 text-center py-10">
         <FadeIn>
-          <p className="text-xs text-amber-400 tracking-[0.25em] uppercase font-display mb-4">Start Your Story</p>
-          <h2 className="text-display font-luxury text-white mb-6 max-w-3xl mx-auto">
-            Let's Create Something <span className="text-gradient-gold italic">Beautiful Together</span>
+          <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-luxury text-white mb-8 max-w-4xl mx-auto drop-shadow-xl leading-[1.15] font-semibold">
+            Let's Create Something <span className="text-white italic font-bold">Beautiful Together</span>
           </h2>
-          <p className="text-white/70 text-clamp-base max-w-xl mx-auto mb-10 font-light">
-            Book your dream photography session with Bobby Studio. Our team is ready to capture your moments with timeless perfection.
-          </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link to="/book">
               <Button variant="primary" size="lg" icon={<FiCalendar />}>
@@ -896,7 +819,7 @@ const ContactCTASection = () => {
               </Button>
             </Link>
             <a
-              href="https://wa.me/919876543210?text=Hi%20Bobby%20Studio!%20I'm%20ready%20to%20book%20a%20shoot."
+              href="https://wa.me/919949216881?text=Hi%20Bobby%20Studio!%20I'm%20ready%20to%20book%20a%20shoot."
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-8 py-4 glass rounded-full text-white text-sm font-display font-semibold tracking-wider hover:bg-white/20 transition-all duration-300"
@@ -930,10 +853,8 @@ const HomePage = () => {
       <PortfolioSection />
       <VideoShowcaseSection />
       <WhyChooseSection />
-      <PackagesSection />
       <TestimonialsSection />
       <InstagramSection />
-      <BlogsSection />
       <ContactCTASection />
     </motion.div>
   );

@@ -1,6 +1,16 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { FiPhone, FiMail, FiMapPin, FiInstagram, FiYoutube, FiArrowUpRight } from 'react-icons/fi';
+import { FiInstagram, FiYoutube, FiArrowUpRight, FiPhone, FiMail, FiMapPin } from 'react-icons/fi';
 import { FaFacebookF, FaPinterestP, FaWhatsapp } from 'react-icons/fa';
+import GlassIcons, { type GlassIconsItem } from '@/components/ui/GlassIcons';
+
+const socialGlassIcons: GlassIconsItem[] = [
+  { icon: <FiInstagram size={20} />, label: 'Instagram', href: 'https://instagram.com/bobbyyyy.x_' },
+  { icon: <FaFacebookF size={18} />, label: 'Facebook', href: 'https://facebook.com/bobbystudio' },
+  { icon: <FiYoutube size={20} />, label: 'YouTube', href: 'https://youtube.com/bobbystudio' },
+  { icon: <FaPinterestP size={18} />, label: 'Pinterest', href: 'https://pinterest.com/bobbystudio' },
+  { icon: <FaWhatsapp size={20} />, label: 'WhatsApp', href: 'https://wa.me/919949216881' }
+];
 
 const footerLinks = {
   quickLinks: [
@@ -12,21 +22,14 @@ const footerLinks = {
     { name: 'Contact', path: '/contact' },
   ],
   services: [
-    { name: 'Wedding Photography', path: '/services' },
-    { name: 'Pre Wedding Shoots', path: '/services' },
-    { name: 'Engagement', path: '/services' },
-    { name: 'Maternity Shoots', path: '/services' },
-    { name: 'Baby Shoot & Birthdays', path: '/services' },
-    { name: 'Fashion & Portraits', path: '/services' },
-    { name: 'Drone & Cinematography', path: '/services' },
-    { name: 'Live Streaming', path: '/services' },
-  ],
-  socials: [
-    { name: 'Instagram', href: 'https://instagram.com/bobbystudio', icon: FiInstagram },
-    { name: 'Facebook', href: 'https://facebook.com/bobbystudio', icon: FaFacebookF },
-    { name: 'YouTube', href: 'https://youtube.com/bobbystudio', icon: FiYoutube },
-    { name: 'Pinterest', href: 'https://pinterest.com/bobbystudio', icon: FaPinterestP },
-    { name: 'WhatsApp', href: 'https://wa.me/919876543210', icon: FaWhatsapp },
+    { name: 'Wedding Photography', path: '/services', serviceId: 'wedding' },
+    { name: 'Pre-Wedding Shoots', path: '/services', serviceId: 'pre-wedding' },
+    { name: 'Engagement', path: '/services', serviceId: 'engagement' },
+    { name: 'Portrait Photography', path: '/services', serviceId: 'portrait' },
+    { name: 'Baby & Newborn', path: '/services', serviceId: 'baby' },
+    { name: 'Food Photography', path: '/services', serviceId: 'food' },
+    { name: 'Destination Shoots', path: '/services', serviceId: 'destination' },
+    { name: 'Architecture & Interior', path: '/services', serviceId: 'architecture' },
   ],
 };
 
@@ -75,13 +78,13 @@ const Footer = () => {
               We create unforgettable wedding stories, cinematic films, elegant portraits, and timeless memories through world-class photography and filmmaking.
             </p>
             <div className="space-y-3 pt-2">
-              <a href="tel:+919876543210" className="flex items-center gap-3 text-[#A0A0A0] hover:text-white transition-colors text-sm">
+              <a href="tel:+919949216881" className="flex items-center gap-3 text-[#A0A0A0] hover:text-white transition-colors text-sm">
                 <FiPhone size={16} className="text-white" />
-                <span>+91 98765 43210</span>
+                <span>+91 99492 16881</span>
               </a>
-              <a href="mailto:hello@bobbystudio.com" className="flex items-center gap-3 text-[#A0A0A0] hover:text-white transition-colors text-sm">
+              <a href="mailto:subramanyambala720@gmail.com" className="flex items-center gap-3 text-[#A0A0A0] hover:text-white transition-colors text-sm">
                 <FiMail size={16} className="text-white" />
-                <span>hello@bobbystudio.com</span>
+                <span>subramanyambala720@gmail.com</span>
               </a>
               <div className="flex items-start gap-3 text-[#A0A0A0] text-sm">
                 <FiMapPin size={16} className="text-white mt-0.5 flex-shrink-0" />
@@ -120,6 +123,7 @@ const Footer = () => {
                 <li key={link.name}>
                   <Link
                     to={link.path}
+                    state={{ selectedServiceId: link.serviceId }}
                     className="text-[#A0A0A0] hover:text-white transition-colors text-sm font-light tracking-wide flex items-center gap-2 group"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-white/30 group-hover:bg-white transition-colors" />
@@ -130,41 +134,13 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Social & Newsletter Column */}
-          <div className="space-y-6">
-            <h4 className="text-base font-luxury tracking-widest text-[#FFFFFF] font-semibold uppercase mb-6 border-l-2 border-white pl-3">
+          {/* Social & 3D Glass Icons Column */}
+          <div className="space-y-4">
+            <h4 className="text-base font-luxury tracking-widest text-[#FFFFFF] font-semibold uppercase mb-4 border-l-2 border-white pl-3">
               Follow Bobby Studio
             </h4>
-            <div className="flex flex-wrap gap-3">
-              {footerLinks.socials.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={item.name}
-                  className="w-11 h-11 rounded-full border border-white/20 bg-transparent flex items-center justify-center text-white hover:bg-white hover:text-black hover:scale-110 transition-all duration-300"
-                >
-                  <item.icon size={18} />
-                </a>
-              ))}
-            </div>
-
-            <div className="pt-4">
-              <p className="text-xs text-[#A0A0A0] uppercase tracking-wider mb-3">Newsletter</p>
-              <div className="flex items-center gap-2">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="w-full px-4 py-3 bg-[#111111] border border-white/20 rounded-full text-xs text-white placeholder:text-[#A0A0A0]/60 focus:outline-none focus:border-white transition-colors"
-                />
-                <button
-                  aria-label="Subscribe to newsletter"
-                  className="px-5 py-3 bg-white text-black hover:bg-white/90 text-xs font-semibold rounded-full transition-colors flex-shrink-0"
-                >
-                  Join
-                </button>
-              </div>
+            <div className="pt-2">
+              <GlassIcons items={socialGlassIcons} className="gap-4 justify-start" />
             </div>
           </div>
         </div>
